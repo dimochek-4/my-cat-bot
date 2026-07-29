@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Мой Котик-Ботик</title>
+    <!-- Подключаем официальный скрипт Telegram для Web App -->
+    <script src="https://telegram.org"></script>
+    <style>
+        /* Стиль для заднего фона игры */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #333;
+            overflow: hidden;
+            -webkit-user-select: none; /* Запрещаем выделение текста на экране */
+            user-select: none;
+        }
+
+        /* Карточка игры */
+        .game-container {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 80%;
+            max-width: 320px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Стили плашек баланса и статов */
+        .stats {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Контейнер для текстуры кота */
+        .cat-container {
+            margin: 20px 0;
+            position: relative;
+        }
+
+        /* Текстура котика */
+        .cat-image {
+            width: 150px;
+            height: 150px;
+            transition: transform 0.1s ease;
+            cursor: pointer;
+        }
+
+        /* Анимация при клике на кота */
+        .cat-image:active {
+            transform: scale(0.9);
+        }
+
+        /* Стили для красивой кнопки */
+        .btn-feed {
+            background: linear-gradient(45deg, #ff7675, #6c5ce7);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .btn-feed:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 5px rgba(108, 92, 231, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <!-- Верхняя панель со статами -->
+        <div class="stats">
+            💰 Монеты: <span id="money-count">100</span>
+        </div>
+
+        <!-- Текстура котика (используется gif для анимации) -->
+        <div class="cat-container">
+            <img id="cat" class="cat-image" src="https://giphy.com" alt="Котик">
+        </div>
+
+        <!-- Кнопка взаимодействия -->
+        <button class="btn-feed" onclick="feedCat()">🍖 Покормить кота</button>
+    </div>
+
+    <script>
+        // Инициализируем Telegram Web App
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Разворачиваем приложение на весь экран телефона
+
+        let money = 100;
+        const moneyElement = document.getElementById('money-count');
+        const catElement = document.getElementById('cat');
+
+        // Функция, срабатывающая при клике на кнопку
+        function feedCat() {
+            if (money >= 10) {
+                money -= 10;
+                moneyElement.innerText = money;
+                
+                // Легкая анимация прыжка котика при кормлении
+                catElement.style.transform = "translateY(-20px) scale(1.1)";
+                setTimeout(() => {
+                    catElement.style.transform = "translateY(0) scale(1)";
+                }, 150);
+
+                // Виброотклик на телефоне, если открыто внутри Telegram
+                if (tg.HapticFeedback) {
+                    tg.HapticFeedback.impactOccurred('medium');
+                }
+            } else {
+                alert("У вас закончились монетки! 😿");
+            }
+        }
+    </script>
+</body>
+</html>
+
